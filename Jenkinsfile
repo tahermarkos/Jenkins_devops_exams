@@ -102,8 +102,8 @@ pipeline {
         }
 
         stage('Deploy PROD') {
-            when {
-                branch 'main'
+            environment {
+                KUBECONFIG = credentials('config') // we retrieve  kubeconfig from secret file called config saved on jenkins
             }
 
             steps {
@@ -114,11 +114,18 @@ pipeline {
                         ok: 'Approuver et déployer'
                     )
                 }
-
-                echo 'Approbation reçue. Déploiement en production...'
                 script {
+                    echo 'Approbation reçue. Déploiement en production...'
                     deployToNamespace('prod')
                 }
+            }
+        }
+
+        stage('Debug Branch') {
+            steps {
+                echo "BRANCH_NAME = ${env.BRANCH_NAME}"
+                echo "GIT_BRANCH = ${env.GIT_BRANCH}"
+                echo "GIT_LOCAL_BRANCH = ${env.GIT_LOCAL_BRANCH}"
             }
         }
     }

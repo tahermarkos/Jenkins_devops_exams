@@ -105,15 +105,21 @@ pipeline {
             when {
                 branch 'main'
             }
-            steps {
-                timeout(time: 15, unit: 'MINUTES') {
-                    input(
-                        message: 'Voulez-vous autoriser le déploiement en production ?',
-                        ok: 'Approuver et déployer'
-                    )
-                }
 
-                deployToNamespace('prod')
+            steps {
+                script {
+                    timeout(time: 15, unit: 'MINUTES') {
+                        input(
+                            id: 'ProdApproval',
+                            message: '⚠️ Voulez-vous autoriser le déploiement en production ?',
+                            ok: 'Approuver et déployer'
+                        )
+                    }
+
+                    echo 'Approbation reçue. Déploiement en production...'
+
+                    deployToNamespace('prod')
+                }
             }
         }
     }
@@ -124,6 +130,10 @@ pipeline {
         }
         failure {
             echo 'Échec du pipeline : vérifier les logs.'
+        }
+
+        aborted {
+            echo 'Pipeline annulé ou approbation interrompue.'
         }
     }
 }

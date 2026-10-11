@@ -107,17 +107,16 @@ pipeline {
             }
 
             steps {
+                timeout(time: 15, unit: 'MINUTES') {
+                    input(
+                        id: 'ProdApproval',
+                        message: '⚠️ Voulez-vous autoriser le déploiement en production ?',
+                        ok: 'Approuver et déployer'
+                    )
+                }
+
+                echo 'Approbation reçue. Déploiement en production...'
                 script {
-                    timeout(time: 15, unit: 'MINUTES') {
-                        input(
-                            id: 'ProdApproval',
-                            message: '⚠️ Voulez-vous autoriser le déploiement en production ?',
-                            ok: 'Approuver et déployer'
-                        )
-                    }
-
-                    echo 'Approbation reçue. Déploiement en production...'
-
                     deployToNamespace('prod')
                 }
             }

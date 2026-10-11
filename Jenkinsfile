@@ -91,7 +91,7 @@ pipeline {
             steps { deployToNamespace('dev') }
         }
 
-        stage('Tests DEV') {
+        stage('Tests CI DEV') {
             when {
                 branch 'dev'
             }

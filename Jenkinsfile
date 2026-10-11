@@ -86,44 +86,9 @@ pipeline {
             }
         }
 
-        stage('Deploy DEV') {
-            when {
-                expression {
-                    env.BRANCH_NAME == 'dev' ||
-                    env.GIT_BRANCH == 'origin/dev' ||
-                    env.GIT_BRANCH == 'dev'
-                }
-            }
-            steps {
-                echo "Déploiement DEV : ${env.BRANCH_NAME ?: env.GIT_BRANCH}"
-                deployToNamespace('dev')
-            }
-        }
-
-        stage('Tests CI DEV') {
-            when {
-                expression {
-                    env.BRANCH_NAME == 'dev' ||
-                    env.GIT_BRANCH == 'origin/dev' ||
-                    env.GIT_BRANCH == 'dev'
-                }
-            }
-            steps {
-                withCredentials([
-                    file(credentialsId: 'conf', variable: 'KUBECONFIG_FILE')
-                ]) {
-                    sh '''
-                        set -eu
-                        export KUBECONFIG="$KUBECONFIG_FILE"
-
-                        kubectl get pods -n dev
-                        kubectl rollout status deployment/movie-service \
-                            -n dev --timeout=180s
-                        kubectl rollout status deployment/cast-service \
-                            -n dev --timeout=180s
-                    '''
-                }
-            }
+        stage('Deploy Dev') {
+            when { branch 'dev' }
+            steps { deployToNamespace('dev') }
         }
 
         stage('Deploy QA') {

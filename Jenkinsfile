@@ -122,19 +122,6 @@ pipeline {
             }
         }
     }
-
-    post {
-        success {
-            echo 'Pipeline terminé avec succès.'
-        }
-        failure {
-            echo 'Échec du pipeline : vérifier les logs.'
-        }
-
-        aborted {
-            echo 'Pipeline annulé ou approbation interrompue.'
-        }
-    }
 }
 
 def deployToNamespace(String namespace) {

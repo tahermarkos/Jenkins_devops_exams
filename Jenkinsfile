@@ -101,26 +101,27 @@ pipeline {
             steps { deployToNamespace('staging') }
         }
 
-        stage('Approval PROD') {
-            when { branch 'main' }
+        stage('Deploy PROD') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 timeout(time: 15, unit: 'MINUTES') {
                     input(
-                        message: 'Autoriser le déploiement en production ?',
-                        ok: 'Déployer'
+                        message: 'Voulez-vous autoriser le déploiement en production ?',
+                        ok: 'Approuver et déployer'
                     )
+                }
+
+                script {
+                    deployToNamespace('prod')
                 }
             }
         }
 
-        stage('Deploy PROD') {
-            when { branch 'main' }
-            steps { deployToNamespace('prod') }
-        }
-    }
-
-    post {
-        success {
+        post {
+            success {
             echo 'Pipeline terminé avec succès.'
         }
         failure {

@@ -87,17 +87,30 @@ pipeline {
         }
 
         stage('Deploy DEV') {
-            when { branch 'dev' }
-            steps { deployToNamespace('dev') }
+            when {
+                expression {
+                    env.BRANCH_NAME == 'dev' ||
+                    env.GIT_BRANCH == 'origin/dev' ||
+                    env.GIT_BRANCH == 'dev'
+                }
+            }
+            steps {
+                echo "Déploiement DEV : ${env.BRANCH_NAME ?: env.GIT_BRANCH}"
+                deployToNamespace('dev')
+            }
         }
 
         stage('Tests CI DEV') {
             when {
-                branch 'dev'
+                expression {
+                    env.BRANCH_NAME == 'dev' ||
+                    env.GIT_BRANCH == 'origin/dev' ||
+                    env.GIT_BRANCH == 'dev'
+                }
             }
             steps {
                 withCredentials([
-                    file(credentialsId: 'config', variable: 'KUBECONFIG_FILE')
+                    file(credentialsId: 'conf', variable: 'KUBECONFIG_FILE')
                 ]) {
                     sh '''
                         set -eu

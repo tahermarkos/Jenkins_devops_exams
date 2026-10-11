@@ -132,10 +132,7 @@ pipeline {
 // Fonction commune aux quatre environnements.
 def deployToNamespace(String namespace) {
     withCredentials([
-        file(
-            credentialsId: 'config',
-            variable: 'KUBECONFIG_FILE'
-        )
+        file(credentialsId: 'conf', variable: 'KUBECONFIG_FILE')
     ]) {
         withEnv(["TARGET_NAMESPACE=${namespace}"]) {
             sh '''
@@ -147,15 +144,16 @@ def deployToNamespace(String namespace) {
                 helm upgrade --install movie-service "$MOVIE_CHART" \
                     --namespace "$TARGET_NAMESPACE" \
                     --set image.repository="$DOCKER_ID/$MOVIE_IMAGE" \
-                    --set image.tag="$DOCKER_TAG"
+                    --set image.tag="$DOCKER_TAG" \
+                    --wait --timeout 180s
 
                 helm upgrade --install cast-service "$CAST_CHART" \
                     --namespace "$TARGET_NAMESPACE" \
                     --set image.repository="$DOCKER_ID/$CAST_IMAGE" \
-                    --set image.tag="$DOCKER_TAG"
+                    --set image.tag="$DOCKER_TAG" \
+                    --wait --timeout 180s
 
-                kubectl rollout status deployment \
-                    -n "$TARGET_NAMESPACE" --timeout=180s
+                kubectl get pods -n "$TARGET_NAMESPACE"
             '''
         }
     }

@@ -102,9 +102,7 @@ pipeline {
         }
 
         stage('Deploy PROD') {
-            environment {
-                KUBECONFIG = credentials('config') // we retrieve  kubeconfig from secret file called config saved on jenkins
-            }
+            when { branch 'main' }
 
             steps {
                 timeout(time: 15, unit: 'MINUTES') {
@@ -120,20 +118,12 @@ pipeline {
                 }
             }
         }
-
-        stage('Debug Branch') {
-            steps {
-                echo "BRANCH_NAME = ${env.BRANCH_NAME}"
-                echo "GIT_BRANCH = ${env.GIT_BRANCH}"
-                echo "GIT_LOCAL_BRANCH = ${env.GIT_LOCAL_BRANCH}"
-            }
-        }
     }
 }
 
 def deployToNamespace(String namespace) {
     withCredentials([
-        file(credentialsId: 'conf', variable: 'KUBECONFIG_FILE')
+        file(credentialsId: 'configuration', variable: 'KUBECONFIG_FILE')
     ]) {
         withEnv(["TARGET_NAMESPACE=${namespace}"]) {
             sh '''

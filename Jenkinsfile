@@ -105,7 +105,6 @@ pipeline {
             when {
                 branch 'main'
             }
-
             steps {
                 timeout(time: 15, unit: 'MINUTES') {
                     input(
@@ -114,14 +113,13 @@ pipeline {
                     )
                 }
 
-                script {
-                    deployToNamespace('prod')
-                }
+                deployToNamespace('prod')
             }
         }
+    }
 
-        post {
-            success {
+    post {
+        success {
             echo 'Pipeline terminé avec succès.'
         }
         failure {

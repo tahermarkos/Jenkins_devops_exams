@@ -15,3 +15,7 @@ async def shutdown():
     await database.disconnect()
 
 app.include_router(casts, prefix='/api/v1/casts', tags=['casts'])
+
+@app.get("/api/v1/checkapi")
+async def check_api():
+    return {"status": "ok"}

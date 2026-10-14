@@ -37,6 +37,9 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+database:
+  secretName: movie-db-secret
+
 service:
   type: NodePort
   port: 80

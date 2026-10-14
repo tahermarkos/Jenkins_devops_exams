@@ -16,3 +16,7 @@ async def shutdown():
 
 
 app.include_router(movies, prefix='/api/v1/movies', tags=['movies'])
+
+@app.get("/api/v1/checkapi")
+async def check_api():
+    return {"status": "ok"}

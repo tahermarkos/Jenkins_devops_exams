@@ -101,7 +101,7 @@ pipeline {
             steps { deployToNamespace('staging') }
         }
 
-        stage('Deploy PROD') {
+        stage('Deploy PROD 2') {
             when { branch 'main' }
 
             steps {

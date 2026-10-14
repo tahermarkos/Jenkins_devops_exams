@@ -137,14 +137,14 @@ def deployToNamespace(String namespace) {
                     --set image.repository="$DOCKER_ID/$MOVIE_IMAGE" \
                     --set image.tag="$DOCKER_TAG" \
                     --set service.nodePort=30007 \
-                    --wait --timeout 180s
+                    --wait --timeout 300s
 
                 helm upgrade --install cast-service "$CAST_CHART" \
                     -n "$TARGET_NAMESPACE" \
                     --set image.repository="$DOCKER_ID/$CAST_IMAGE" \
                     --set image.tag="$DOCKER_TAG" \
                     --set service.nodePort=30008 \
-                    --wait --timeout 180s
+                    --wait --timeout 300s
             '''
         }
     }

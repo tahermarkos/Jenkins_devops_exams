@@ -123,7 +123,7 @@ pipeline {
 
 def deployToNamespace(String namespace) {
     withCredentials([
-        file(credentialsId: 'conf', variable: 'KUBECONFIG_FILE')
+        file(credentialsId: 'config', variable: 'KUBECONFIG_FILE')
     ]) {
         withEnv(["TARGET_NAMESPACE=${namespace}"]) {
             sh '''
